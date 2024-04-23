@@ -8,24 +8,24 @@ namespace DomainModel
     {
         public string Email { get; }
         public string Name { get; private set; }
-        public Address Address { get; private set; }
+        public Address[] Addresses { get; private set; }
 
         private readonly List<Enrollment> _enrollments = new List<Enrollment>();
         public virtual IReadOnlyList<Enrollment> Enrollments => _enrollments.ToList();
 
         private Student() { }
 
-        public Student(string email, string name, Address address)
+        public Student(string email, string name, Address[] address)
             : this()
         {
             Email = email;
             EditPersonalInfo(name, address);
         }
 
-        public void EditPersonalInfo(string name, Address address)
+        public void EditPersonalInfo(string name, Address[] address)
         {
             Name = name;
-            Address = address;
+            Addresses = address;
         }
 
         public virtual void Enroll(Course course, Grade grade)
