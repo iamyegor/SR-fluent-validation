@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Api.DTOs;
-using Api.FluentValidation;
 using Api.Repositories;
 using DomainModel;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -27,13 +25,11 @@ namespace Api.Controllers
         [HttpPost]
         public IActionResult Register([FromBody] RegisterRequest request)
         {
-            var address = new Address(
-                request.Address.Street,
-                request.Address.City,
-                request.Address.State,
-                request.Address.ZipCode
-            );
-            var student = new Student(request.Email, request.Name, address);
+            Address[] addresses = request
+                .Addresses.Select(x => new Address(x.Street, x.City, x.State, x.ZipCode))
+                .ToArray();
+
+            var student = new Student(request.Email, request.Name, addresses);
             _studentRepository.Save(student);
 
             var response = new RegisterResponse { Id = student.Id };
@@ -45,8 +41,12 @@ namespace Api.Controllers
         {
             Student student = _studentRepository.GetById(id);
 
-            // student.EditPersonalInfo(request.Name, request.Address);
-            // _studentRepository.Save(student);
+            Address[] addresses = request
+                .Addresses.Select(x => new Address(x.Street, x.City, x.State, x.ZipCode))
+                .ToArray();
+
+            student.EditPersonalInfo(request.Name, addresses);
+            _studentRepository.Save(student);
 
             return Ok();
         }
@@ -74,13 +74,15 @@ namespace Api.Controllers
 
             var resonse = new GetResonse
             {
-                Address = new AddressDto
-                {
-                    Street = student.Address.Street,
-                    City = student.Address.City,
-                    State = student.Address.State,
-                    ZipCode = student.Address.ZipCode
-                },
+                Addresses = student
+                    .Addresses.Select(x => new AddressDto
+                    {
+                        Street = x.Street,
+                        City = x.City,
+                        State = x.State,
+                        ZipCode = x.ZipCode
+                    })
+                    .ToArray(),
                 Email = student.Email,
                 Name = student.Name,
                 Enrollments = student
