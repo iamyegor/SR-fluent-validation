@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using Api.DTOs;
+using Api.Repositories;
 using DomainModel;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api
+namespace Api.Controllers
 {
     [Route("api/students")]
     public class StudentController : Controller

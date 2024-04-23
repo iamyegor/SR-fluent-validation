@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using DomainModel;
 
-namespace Api
+namespace Api.Repositories
 {
     public sealed class CourseRepository
     {
-        private static readonly Course[] _allCourses =
+        private static readonly Course[] AllCourses =
         {
             new Course(1, "Calculus", 5),
             new Course(2, "History", 4),
@@ -14,7 +14,7 @@ namespace Api
 
         public Course GetByName(string name)
         {
-            return _allCourses.SingleOrDefault(x => x.Name == name);
+            return AllCourses.SingleOrDefault(x => x.Name == name);
         }
     }
 }
