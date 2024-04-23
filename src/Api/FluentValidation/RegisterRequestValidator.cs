@@ -15,6 +15,7 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
         RuleFor(x => x.Phone)
             .NotEmpty()
             .Must(x => Regex.IsMatch(x, "^[2-9][0-9]{9}$"))
+            .When(x => x.Phone != null, ApplyConditionTo.CurrentValidator)
             .WithMessage("The phone number is incorrect");
     }
 }
