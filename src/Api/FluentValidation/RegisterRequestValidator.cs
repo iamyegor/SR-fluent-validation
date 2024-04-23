@@ -27,6 +27,7 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
             .When(x => x.Email != null, ApplyConditionTo.CurrentValidator);
 
         RuleFor(x => x.Phone)
+            .Cascade(CascadeMode.Stop)
             .NotEmpty()
             .Must(x => Regex.IsMatch(x, "^[2-9][0-9]{9}$"))
             .When(x => x.Phone != null);

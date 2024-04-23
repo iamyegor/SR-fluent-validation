@@ -1,5 +1,6 @@
 using Api.Repositories;
 using Api.Utils;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,6 +15,7 @@ namespace Api
             services.AddTransient<StudentRepository>();
             services.AddTransient<CourseRepository>();
 
+            ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
         }
 
         public void Configure(IApplicationBuilder app)
