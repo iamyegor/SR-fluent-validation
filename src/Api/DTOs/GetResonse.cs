@@ -4,7 +4,7 @@ namespace Api.DTOs
     {
         public string Name { get; set; }
         public string Email { get; set; }
-        public string Address { get; set; }
+        public AddressDto Address { get; set; }
         public CourseEnrollmentDto[] Enrollments { get; set; }
     }
 }
