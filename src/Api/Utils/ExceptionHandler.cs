@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 
-namespace Api
+namespace Api.Utils
 {
     public sealed class ExceptionHandler
     {
