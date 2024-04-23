@@ -27,14 +27,13 @@ namespace Api.Controllers
         [HttpPost]
         public IActionResult Register([FromBody] RegisterRequest request)
         {
-            RegisterRequestValidator validator = new RegisterRequestValidator();
-            ValidationResult result = validator.Validate(request);
-            if (!result.IsValid)
-            {
-                return BadRequest(result.Errors.First().ErrorMessage);
-            }
-
-            var student = new Student(request.Email, request.Name, request.Address);
+            var address = new Address(
+                request.Address.Street,
+                request.Address.City,
+                request.Address.State,
+                request.Address.ZipCode
+            );
+            var student = new Student(request.Email, request.Name, address);
             _studentRepository.Save(student);
 
             var response = new RegisterResponse { Id = student.Id };
@@ -46,8 +45,8 @@ namespace Api.Controllers
         {
             Student student = _studentRepository.GetById(id);
 
-            student.EditPersonalInfo(request.Name, request.Address);
-            _studentRepository.Save(student);
+            // student.EditPersonalInfo(request.Name, request.Address);
+            // _studentRepository.Save(student);
 
             return Ok();
         }
@@ -75,7 +74,13 @@ namespace Api.Controllers
 
             var resonse = new GetResonse
             {
-                Address = student.Address,
+                Address = new AddressDto
+                {
+                    Street = student.Address.Street,
+                    City = student.Address.City,
+                    State = student.Address.State,
+                    ZipCode = student.Address.ZipCode
+                },
                 Email = student.Email,
                 Name = student.Name,
                 Enrollments = student

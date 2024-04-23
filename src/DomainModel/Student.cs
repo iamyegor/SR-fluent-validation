@@ -8,23 +8,21 @@ namespace DomainModel
     {
         public string Email { get; }
         public string Name { get; private set; }
-        public string Address { get; private set; }
+        public Address Address { get; private set; }
 
         private readonly List<Enrollment> _enrollments = new List<Enrollment>();
         public virtual IReadOnlyList<Enrollment> Enrollments => _enrollments.ToList();
 
-        protected Student()
-        {
-        }
+        private Student() { }
 
-        public Student(string email, string name, string address)
+        public Student(string email, string name, Address address)
             : this()
         {
             Email = email;
             EditPersonalInfo(name, address);
         }
 
-        public void EditPersonalInfo(string name, string address)
+        public void EditPersonalInfo(string name, Address address)
         {
             Name = name;
             Address = address;
@@ -34,9 +32,11 @@ namespace DomainModel
         {
             if (_enrollments.Count >= 2)
                 throw new Exception("Cannot have more than 2 enrollments");
-            
+
             if (_enrollments.Any(x => x.Course == course))
-                throw new Exception($"Student '{Name}' already enrolled into course '{course.Name}'");
+                throw new Exception(
+                    $"Student '{Name}' already enrolled into course '{course.Name}'"
+                );
 
             var enrollment = new Enrollment(this, course, grade);
             _enrollments.Add(enrollment);
