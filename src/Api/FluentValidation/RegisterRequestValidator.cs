@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Api.DTOs;
 using FluentValidation;
 
@@ -27,7 +28,7 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
 
         RuleFor(x => x.Phone)
             .NotEmpty()
-            .Matches("^[2-9][0-9]{9}$")
+            .Must(x => Regex.IsMatch(x, "^[2-9][0-9]{9}$"))
             .When(x => x.Phone != null);
     }
 }

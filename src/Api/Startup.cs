@@ -13,6 +13,7 @@ namespace Api
 
             services.AddTransient<StudentRepository>();
             services.AddTransient<CourseRepository>();
+
         }
 
         public void Configure(IApplicationBuilder app)
