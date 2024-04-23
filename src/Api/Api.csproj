@@ -14,7 +14,4 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.9.1" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="FluentValidation\" />
-  </ItemGroup>
 </Project>

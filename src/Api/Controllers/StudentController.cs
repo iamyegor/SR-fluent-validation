@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
 using Api.DTOs;
+using Api.FluentValidation;
 using Api.Repositories;
 using DomainModel;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -13,7 +15,10 @@ namespace Api.Controllers
         private readonly StudentRepository _studentRepository;
         private readonly CourseRepository _courseRepository;
 
-        public StudentController(StudentRepository studentRepository, CourseRepository courseRepository)
+        public StudentController(
+            StudentRepository studentRepository,
+            CourseRepository courseRepository
+        )
         {
             _studentRepository = studentRepository;
             _courseRepository = courseRepository;
@@ -22,13 +27,17 @@ namespace Api.Controllers
         [HttpPost]
         public IActionResult Register([FromBody] RegisterRequest request)
         {
+            RegisterRequestValidator validator = new RegisterRequestValidator();
+            ValidationResult result = validator.Validate(request);
+            if (!result.IsValid)
+            {
+                return BadRequest(result.Errors.First().ErrorMessage);
+            }
+
             var student = new Student(request.Email, request.Name, request.Address);
             _studentRepository.Save(student);
 
-            var response = new RegisterResponse
-            {
-                Id = student.Id
-            };
+            var response = new RegisterResponse { Id = student.Id };
             return Ok(response);
         }
 
@@ -52,7 +61,7 @@ namespace Api.Controllers
             {
                 Course course = _courseRepository.GetByName(enrollmentDto.Course);
                 var grade = Enum.Parse<Grade>(enrollmentDto.Grade);
-                
+
                 student.Enroll(course, grade);
             }
 
@@ -69,11 +78,13 @@ namespace Api.Controllers
                 Address = student.Address,
                 Email = student.Email,
                 Name = student.Name,
-                Enrollments = student.Enrollments.Select(x => new CourseEnrollmentDto
-                {
-                    Course = x.Course.Name,
-                    Grade = x.Grade.ToString()
-                }).ToArray()
+                Enrollments = student
+                    .Enrollments.Select(x => new CourseEnrollmentDto
+                    {
+                        Course = x.Course.Name,
+                        Grade = x.Grade.ToString()
+                    })
+                    .ToArray()
             };
             return Ok(resonse);
         }
