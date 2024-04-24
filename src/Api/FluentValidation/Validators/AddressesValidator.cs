@@ -1,4 +1,5 @@
 using Api.DTOs;
+using Api.FluentValidation.CustomRules;
 using FluentValidation;
 
 namespace Api.FluentValidation.Validators;
@@ -10,8 +11,7 @@ public class AddressesValidator : AbstractValidator<AddressDto[]>
         RuleFor(x => x)
             .Cascade(CascadeMode.Stop)
             .NotNull()
-            .Must(x => x?.Length is >= 1 and <= 3)
-            .WithMessage("The number of addresses must be between 1 and 3")
+            .InRange(1, 3)
             .ForEach(x => x.SetValidator(new AddressDtoValidator()));
     }
 }
