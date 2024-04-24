@@ -32,7 +32,9 @@ namespace Api.Utils
 
         private Task HandleException(HttpContext context, Exception exception)
         {
-            string errorMessage = _env.IsProduction() ? "Internal server error" : "Exception: " + exception.Message;
+            string errorMessage = _env.IsProduction()
+                ? "Internal server error"
+                : "Exception: " + exception.Message;
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             return context.Response.WriteAsync(errorMessage);
