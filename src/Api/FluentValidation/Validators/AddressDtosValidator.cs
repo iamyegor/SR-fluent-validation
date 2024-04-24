@@ -1,7 +1,7 @@
 using Api.DTOs;
 using FluentValidation;
 
-namespace Api.FluentValidation;
+namespace Api.FluentValidation.Validators;
 
 public class AddressDtosValidator : AbstractValidator<AddressDto[]>
 {
@@ -14,5 +14,5 @@ public class AddressDtosValidator : AbstractValidator<AddressDto[]>
             {
                 x.NotNull().SetValidator(new AddressDtoValidator());
             });
-    } 
+    }
 }

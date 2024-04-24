@@ -1,7 +1,7 @@
 using Api.DTOs;
 using FluentValidation;
 
-namespace Api.FluentValidation;
+namespace Api.FluentValidation.Validators;
 
 public class EditPersonalInfoRequestValidator : AbstractValidator<EditPersonalInfoRequest>
 {

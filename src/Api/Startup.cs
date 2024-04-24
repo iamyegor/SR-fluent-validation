@@ -1,8 +1,11 @@
+using Api.FluentValidation;
+using Api.FluentValidation.Validators;
 using Api.Repositories;
 using Api.Utils;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 namespace Api
 {
@@ -14,6 +17,8 @@ namespace Api
 
             services.AddTransient<StudentRepository>();
             services.AddTransient<CourseRepository>();
+            services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
+            services.AddFluentValidationAutoValidation();
 
             ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
         }
@@ -22,7 +27,10 @@ namespace Api
         {
             app.UseMiddleware<ExceptionHandler>();
             app.UseRouting();
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }
