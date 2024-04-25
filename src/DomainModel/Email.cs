@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using DomainModel.Common;
+using DomainModel.DomainErrors;
 using XResults;
 
 namespace DomainModel
@@ -14,22 +15,22 @@ namespace DomainModel
             Value = value;
         }
 
-        public static Result<Email> Create(string input)
+        public static Result<Email, Error> Create(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
             {
-                return Result.Fail("Email is required");
+                return Errors.Email.IsRequired();
             }
 
             string email = input.Trim();
             if (email.Length > 150)
             {
-                return Result.Fail("Email is too long");
+                return Errors.Email.IsTooLong(email);
             }
 
             if (Regex.IsMatch(email, @"^(.+)@(.+)$") == false)
             {
-                return Result.Fail("Email has invalid signature");
+                return Errors.Email.HasInvalidSignature(email);
             }
 
             return new Email(email);
