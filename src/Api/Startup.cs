@@ -17,6 +17,7 @@ namespace Api
 
             services.AddTransient<StudentRepository>();
             services.AddTransient<CourseRepository>();
+            services.AddTransient<StatesRepository>();
             services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
             services.AddFluentValidationAutoValidation();
 

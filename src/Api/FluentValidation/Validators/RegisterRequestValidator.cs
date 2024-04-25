@@ -1,5 +1,6 @@
 using Api.DTOs;
 using Api.FluentValidation.CustomRules;
+using Api.Repositories;
 using DomainModel;
 using FluentValidation;
 
@@ -7,10 +8,10 @@ namespace Api.FluentValidation.Validators;
 
 public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
 {
-    public RegisterRequestValidator()
+    public RegisterRequestValidator(StatesRepository statesRepository)
     {
         RuleFor(x => x.Name).NotEmpty().Length(0, 200);
-        RuleFor(x => x.Addresses).SetValidator(new AddressesValidator());
+        RuleFor(x => x.Addresses).SetValidator(new AddressesValidator(statesRepository));
 
         When(
             x => x.Email == null,
