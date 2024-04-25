@@ -18,18 +18,18 @@ namespace DomainModel
         {
             if (string.IsNullOrWhiteSpace(input))
             {
-                return Result.Fail("Value is required");
+                return Result.Fail("Email is required");
             }
 
             string email = input.Trim();
             if (email.Length > 150)
             {
-                return Result.Fail("Value is too long");
+                return Result.Fail("Email is too long");
             }
 
             if (Regex.IsMatch(email, @"^(.+)@(.+)$") == false)
             {
-                return Result.Fail("Value is invalid");
+                return Result.Fail("Email has invalid signature");
             }
 
             return new Email(email);

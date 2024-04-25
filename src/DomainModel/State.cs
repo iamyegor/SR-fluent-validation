@@ -18,18 +18,18 @@ public class State : ValueObject
     {
         if (string.IsNullOrWhiteSpace(input))
         {
-            return Result.Fail("Value is required");
+            return Result.Fail("State is required");
         }
 
         string name = input.Trim().ToUpper();
         if (name.Length > 2)
         {
-            return Result.Fail("Value is too long");
+            return Result.Fail("State is more than 2 characters");
         }
 
         if (allStates.Any(x => x == name) == false)
         {
-            return Result.Fail("State is invalid");
+            return Result.Fail("State is not an existing U.S. state");
         }
 
         return new State(name);
