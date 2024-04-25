@@ -13,51 +13,54 @@ public class StudentController : ControllerBase
 {
     private readonly StudentRepository _studentRepository;
     private readonly CourseRepository _courseRepository;
+    private readonly StatesRepository _statesRepository;
 
-    public StudentController(StudentRepository studentRepository, CourseRepository courseRepository)
+    public StudentController(
+        StudentRepository studentRepository,
+        CourseRepository courseRepository,
+        StatesRepository statesRepository
+    )
     {
         _studentRepository = studentRepository;
         _courseRepository = courseRepository;
+        _statesRepository = statesRepository;
     }
 
     [HttpPost]
     public IActionResult Register(RegisterRequest request)
     {
+        string[] allStates = _statesRepository.GetAll();
         Address[] addresses = request
-            .Addresses.Select(x => new Address(x.Street, x.City, x.State, x.ZipCode))
+            .Addresses.Select(x =>
+                Address.Create(x.Street, x.City, State.Create(x.State, allStates), x.ZipCode).Value
+            )
             .ToArray();
 
-        var emailOrError = Email.Create(request.Email);
-        if (emailOrError.IsFailure)
-        {
-            return BadRequest(emailOrError.ErrorMessage);
-        }
+        Email email = Email.Create(request.Email);
+        string name = request.Name.Trim();
+        Student student = new Student(email, name, addresses);
 
-        var nameOrError = StudentName.Create(request.Name);
-        if (nameOrError.IsFailure)
-        {
-            return BadRequest(emailOrError.ErrorMessage);
-        }
-
-        var student = new Student(emailOrError, nameOrError, addresses);
         _studentRepository.Save(student);
 
         var response = new RegisterResponse { Id = student.Id };
+
         return Ok(response);
     }
 
     [HttpPut("{id}")]
     public IActionResult EditPersonalInfo(long id, EditPersonalInfoRequest request)
     {
-        Student student = _studentRepository.GetById(id);
-
-        Address[] addresses = request
-            .Addresses.Select(x => new Address(x.Street, x.City, x.State, x.ZipCode))
-            .ToArray();
-
+        // Student student = _studentRepository.GetById(id);
+        //
+        // Address[] addresses = request
+        //     .Addresses.Select(x =>
+        //         Address.Create(x.Street, x.City, State.Create(x.State,), x.ZipCode).Value
+        //     )
+        //     .ToArray();
+        //
         // student.EditPersonalInfo(request.Name, addresses);
-        _studentRepository.Save(student);
-
+        // _studentRepository.Save(student);
+        //
         return Ok();
     }
 
@@ -89,12 +92,12 @@ public class StudentController : ControllerBase
                 {
                     Street = x.Street,
                     City = x.City,
-                    State = x.State,
+                    State = x.State.Value,
                     ZipCode = x.ZipCode
                 })
                 .ToArray(),
             Email = student.Email.Value,
-            Name = student.Name.Value,
+            Name = student.Name,
             Enrollments = student
                 .Enrollments.Select(x => new CourseEnrollmentDto
                 {

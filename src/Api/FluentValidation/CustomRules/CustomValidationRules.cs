@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using FluentValidation;
-using Results;
+using XResults;
 
 namespace Api.FluentValidation.CustomRules;
 

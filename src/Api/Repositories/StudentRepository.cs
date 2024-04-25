@@ -40,8 +40,8 @@ namespace Api.Repositories
         {
             var alice = new Student(
                 Email.Create("alice@gmail.com"),
-                StudentName.Create("Alice Alison"),
-                [new Address("1234 Main St", "Arlington", "VA", "22201")]
+                "Alice Alison",
+                [Address.Create("1234 Main St", "Arlington", State.Create("VA", ["VA"]), "22201")]
             );
             SetId(alice, 1);
             alice.Enroll(new Course(1, "Calculus", 5), Grade.A);
@@ -53,8 +53,8 @@ namespace Api.Repositories
         {
             var bob = new Student(
                 Email.Create("bob@gmail.com"),
-                StudentName.Create("Bob Bobson"),
-                [new Address("2345 Second St", "Barlington", "VA", "22202")]
+                "Bob Bobson",
+                [Address.Create("2345 Second St", "Barlington", State.Create("VA", ["VA"]), "22202")]
             );
             SetId(bob, 2);
             bob.Enroll(new Course(2, "History", 4), Grade.B);
