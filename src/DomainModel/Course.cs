@@ -1,4 +1,6 @@
-﻿namespace DomainModel
+﻿using DomainModel.Common;
+
+namespace DomainModel
 {
     public class Course : Entity
     {

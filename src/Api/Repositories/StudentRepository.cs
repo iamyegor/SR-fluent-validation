@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using DomainModel;
+using DomainModel.Common;
 
 namespace Api.Repositories
 {
@@ -38,8 +39,8 @@ namespace Api.Repositories
         private static Student Alice()
         {
             var alice = new Student(
-                "alice@gmail.com",
-                "Alice Alison",
+                Email.Create("alice@gmail.com"),
+                StudentName.Create("Alice Alison"),
                 [new Address("1234 Main St", "Arlington", "VA", "22201")]
             );
             SetId(alice, 1);
@@ -51,8 +52,8 @@ namespace Api.Repositories
         private static Student Bob()
         {
             var bob = new Student(
-                "bob@gmail.com",
-                "Bob Bobson",
+                Email.Create("bob@gmail.com"),
+                StudentName.Create("Bob Bobson"),
                 [new Address("2345 Second St", "Barlington", "VA", "22202")]
             );
             SetId(bob, 2);

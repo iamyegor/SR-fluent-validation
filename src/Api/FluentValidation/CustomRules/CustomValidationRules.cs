@@ -5,6 +5,7 @@ namespace Api.FluentValidation.CustomRules;
 
 public static class CustomValidationRules
 {
+
     public static IRuleBuilderOptionsConditions<T, IList<TElement>> InRange<T, TElement>(
         this IRuleBuilder<T, IList<TElement>> ruleBuilder,
         int min,

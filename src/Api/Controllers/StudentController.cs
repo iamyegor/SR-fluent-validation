@@ -27,7 +27,19 @@ public class StudentController : ControllerBase
             .Addresses.Select(x => new Address(x.Street, x.City, x.State, x.ZipCode))
             .ToArray();
 
-        var student = new Student(request.Email, request.Name, addresses);
+        var emailOrError = Email.Create(request.Email);
+        if (emailOrError.IsFailure)
+        {
+            return BadRequest(emailOrError.ErrorMessage);
+        }
+
+        var nameOrError = StudentName.Create(request.Name);
+        if (nameOrError.IsFailure)
+        {
+            return BadRequest(emailOrError.ErrorMessage);
+        }
+
+        var student = new Student(emailOrError, nameOrError, addresses);
         _studentRepository.Save(student);
 
         var response = new RegisterResponse { Id = student.Id };
@@ -43,7 +55,7 @@ public class StudentController : ControllerBase
             .Addresses.Select(x => new Address(x.Street, x.City, x.State, x.ZipCode))
             .ToArray();
 
-        student.EditPersonalInfo(request.Name, addresses);
+        // student.EditPersonalInfo(request.Name, addresses);
         _studentRepository.Save(student);
 
         return Ok();
@@ -81,8 +93,8 @@ public class StudentController : ControllerBase
                     ZipCode = x.ZipCode
                 })
                 .ToArray(),
-            Email = student.Email,
-            Name = student.Name,
+            Email = student.Email.Value,
+            Name = student.Name.Value,
             Enrollments = student
                 .Enrollments.Select(x => new CourseEnrollmentDto
                 {
