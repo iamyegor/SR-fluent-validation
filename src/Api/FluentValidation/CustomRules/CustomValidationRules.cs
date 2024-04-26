@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DomainModel.DomainErrors;
 using FluentValidation;
 using XResults;
 
@@ -7,18 +8,19 @@ namespace Api.FluentValidation.CustomRules;
 
 public static class CustomValidationRules
 {
-    public static IRuleBuilderOptionsConditions<T, TProperty> MustBeSuccessful<T, TProperty>(
-        this IRuleBuilder<T, TProperty> ruleBuilder,
-        Func<TProperty, Result> callback
-    )
+    public static IRuleBuilderOptionsConditions<T, TProperty> MustBeSuccessful<
+        T,
+        TProperty,
+        TValue
+    >(this IRuleBuilder<T, TProperty> ruleBuilder, Func<TProperty, Result<TValue, Error>> callback)
     {
         return ruleBuilder.Custom(
             (value, context) =>
             {
-                Result result = callback(value);
+                Result<TValue, Error> result = callback(value);
                 if (result.IsFailure)
                 {
-                    context.AddFailure(result.ErrorMessage);
+                    context.AddFailure(result.Error.Serialize());
                 }
             }
         );

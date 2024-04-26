@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using DomainModel.Common;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace DomainModel.DomainErrors;
 
@@ -23,5 +25,15 @@ public class Error : ValueObject
     protected override IEnumerable<object?> GetEqualityComponents()
     {
         yield return ErrorCode;
+    }
+    
+    public string Serialize()
+    {
+        var jsonSettings = new JsonSerializerSettings()
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
+
+        return JsonConvert.SerializeObject(this, jsonSettings);
     }
 }

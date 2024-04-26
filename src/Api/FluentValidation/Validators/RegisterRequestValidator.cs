@@ -28,7 +28,7 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
             }
         );
 
-        RuleFor(x => x.Email).MustBeSuccessful(x => Email.Create(x)).When(x => x.Email != null);
+        RuleFor(x => x.Email).MustBeSuccessful(Email.Create).When(x => x.Email != null);
 
         RuleFor(x => x.Phone).NotEmpty().Matches("^[2-9][0-9]{9}$").When(x => x.Phone != null);
     }
