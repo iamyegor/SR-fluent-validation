@@ -1,5 +1,6 @@
+using System;
 using Api.FluentValidation.Extensions;
-using DomainModel;
+using DomainModel.DomainErrors;
 using FluentValidation;
 
 namespace Api.FluentValidation.CustomRules;
@@ -7,7 +8,8 @@ namespace Api.FluentValidation.CustomRules;
 public static class OverridenValidationRules
 {
     public static IRuleBuilderOptionsConditions<T, TProperty> MustNotBeEmpty<T, TProperty>(
-        this IRuleBuilder<T, TProperty> ruleBuilder
+        this IRuleBuilder<T, TProperty> ruleBuilder,
+        Func<TProperty, Error> func
     )
     {
         return ruleBuilder.Custom(
@@ -15,7 +17,8 @@ public static class OverridenValidationRules
             {
                 if (value == null || string.IsNullOrWhiteSpace(value.ToString()))
                 {
-                    context.AddError(Errors.Generic.IsRequired(context.PropertyPath));
+                    Error error = func(value);
+                    context.AddError(error);
                 }
             }
         );

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Api.FluentValidation.Extensions;
 using DomainModel.DomainErrors;
 using FluentValidation;
 using XResults;
@@ -20,7 +21,7 @@ public static class CustomValidationRules
                 Result<TValue, Error> result = callback(value);
                 if (result.IsFailure)
                 {
-                    context.AddFailure(result.Error.Serialize());
+                    context.AddError(result.Error);
                 }
             }
         );
@@ -29,7 +30,8 @@ public static class CustomValidationRules
     public static IRuleBuilderOptionsConditions<T, IList<TElement>> InRange<T, TElement>(
         this IRuleBuilder<T, IList<TElement>> ruleBuilder,
         int min,
-        int max
+        int max,
+        Func<IList<TElement>, Error> func
     )
     {
         return ruleBuilder.Custom(
@@ -37,9 +39,27 @@ public static class CustomValidationRules
             {
                 if (list.Count < min || list.Count > max)
                 {
-                    context.AddFailure(
-                        $"The list must contain more than {min} items and less than {max}. Currently, It contains {list.Count} items."
-                    );
+                    Error error = func(list);
+                    context.AddError(error);
+                }
+            }
+        );
+    }
+
+    public static IRuleBuilderOptionsConditions<T, string> InRange<T>(
+        this IRuleBuilder<T, string> ruleBuilder,
+        int min,
+        int max,
+        Func<string, Error> func
+    )
+    {
+        return ruleBuilder.Custom(
+            (value, context) =>
+            {
+                if (value.Length < min || value.Length > max)
+                {
+                    Error error = func(value);
+                    context.AddError(error);
                 }
             }
         );

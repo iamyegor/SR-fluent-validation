@@ -1,4 +1,4 @@
-using DomainModel;
+using DomainModel.DomainErrors;
 using FluentValidation;
 
 namespace Api.FluentValidation.Extensions;

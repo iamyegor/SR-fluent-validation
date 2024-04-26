@@ -23,5 +23,10 @@ public static partial class Errors
             var details = new Dictionary<string, object?>() { ["zipCode"] = zipCode };
             return new Error("zipCode.invalid.length", "Zip code has invalid length", details);
         }
+
+        public static Error IsRequired()
+        {
+            return new Error("address.required", "Address is required");
+        }
     }
 }
