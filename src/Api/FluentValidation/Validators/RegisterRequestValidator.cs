@@ -10,26 +10,29 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
 {
     public RegisterRequestValidator(StatesRepository statesRepository)
     {
-        RuleFor(x => x.Name).NotEmpty().Length(0, 200);
+        RuleFor(x => x.Name).MustNotBeEmpty().Length(0, 200);
         RuleFor(x => x.Addresses).SetValidator(new AddressesValidator(statesRepository));
 
         When(
             x => x.Email == null,
             () =>
             {
-                RuleFor(x => x.Phone).NotEmpty();
+                RuleFor(x => x.Phone).MustNotBeEmpty();
             }
         );
         When(
             x => x.Phone == null,
             () =>
             {
-                RuleFor(x => x.Email).NotEmpty();
+                RuleFor(x => x.Email).MustNotBeEmpty();
             }
         );
 
         RuleFor(x => x.Email).MustBeSuccessful(Email.Create).When(x => x.Email != null);
 
-        RuleFor(x => x.Phone).NotEmpty().Matches("^[2-9][0-9]{9}$").When(x => x.Phone != null);
+        RuleFor(x => x.Phone)
+            .MustNotBeEmpty()
+            .Matches("^[2-9][0-9]{9}$")
+            .When(x => x.Phone != null);
     }
 }
