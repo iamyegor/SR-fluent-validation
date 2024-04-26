@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DomainModel.Common;
+using DomainModel.DomainErrors;
 using XResults;
 
 namespace DomainModel;
@@ -14,22 +15,22 @@ public class State : ValueObject
         Value = value;
     }
 
-    public static Result<State> Create(string input, IEnumerable<string> allStates)
+    public static Result<State, Error> Create(string input, IEnumerable<string> allStates)
     {
         if (string.IsNullOrWhiteSpace(input))
         {
-            return Result.Fail("State is required");
+            return Errors.State.IsRequired();
         }
 
         string name = input.Trim().ToUpper();
         if (name.Length > 2)
         {
-            return Result.Fail("State is more than 2 characters");
+            return Errors.State.IsTooLong(name);
         }
 
         if (allStates.Any(x => x == name) == false)
         {
-            return Result.Fail("State is not an existing U.S. state");
+            return Errors.State.DoesNotExist(name);
         }
 
         return new State(name);

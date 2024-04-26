@@ -1,4 +1,5 @@
 using DomainModel.Common;
+using DomainModel.DomainErrors;
 using XResults;
 
 namespace DomainModel;
@@ -18,7 +19,12 @@ public class Address : Entity
         ZipCode = zipCode;
     }
 
-    public static Result<Address> Create(string street, string city, State state, string zipCode)
+    public static Result<Address, Error> Create(
+        string? street,
+        string? city,
+        State state,
+        string? zipCode
+    )
     {
         street = (street ?? "").Trim();
         city = (city ?? "").Trim();
@@ -26,17 +32,17 @@ public class Address : Entity
 
         if (street.Length < 1 || street.Length > 100)
         {
-            return Result.Fail("Invalid street length");
+            return Errors.Address.HasInvalidStreetLength(street);
         }
 
         if (city.Length < 1 || city.Length > 40)
         {
-            return Result.Fail("Invalid city length");
+            return Errors.Address.HasInvalidCityLength(city);
         }
 
         if (zipCode.Length < 1 || zipCode.Length > 5)
         {
-            return Result.Fail("Invalid zip code length");
+            return Errors.Address.HasInvalidZipCodeLength(zipCode);
         }
 
         return new Address(street, city, state, zipCode);
