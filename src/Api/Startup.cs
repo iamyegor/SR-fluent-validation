@@ -1,4 +1,4 @@
-using Api.FluentValidation;
+using Api.FluentValidation.ResponseFactories;
 using Api.FluentValidation.Validators;
 using Api.Repositories;
 using Api.Utils;
@@ -13,13 +13,21 @@ namespace Api
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services
+                .AddControllers()
+                .ConfigureApiBehaviorOptions(setup =>
+                {
+                    setup.InvalidModelStateResponseFactory = ValidationErrorResponseFactory.Create;
+                });
 
             services.AddTransient<StudentRepository>();
             services.AddTransient<CourseRepository>();
             services.AddTransient<StatesRepository>();
             services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
-            services.AddFluentValidationAutoValidation();
+            services.AddFluentValidationAutoValidation(config =>
+            {
+                config.OverrideDefaultResultFactoryWith<CustomResultFactory>();
+            });
 
             ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
         }

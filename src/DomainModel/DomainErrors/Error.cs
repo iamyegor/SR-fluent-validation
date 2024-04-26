@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DomainModel.Common;
 using Newtonsoft.Json;
@@ -35,5 +36,16 @@ public class Error : ValueObject
         };
 
         return JsonConvert.SerializeObject(this, jsonSettings);
+    }
+    
+    public static Error Deserialize(string serialized)
+    {
+        Error? deserialized = JsonConvert.DeserializeObject<Error>(serialized);
+        if (deserialized == null)
+        {
+            throw new Exception($"Invalid error serialization: {serialized}");
+        }
+
+        return deserialized;
     }
 }
