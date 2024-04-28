@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using DomainModel.DomainErrors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 
 namespace Api.Utils;
 
@@ -35,10 +37,15 @@ public sealed class ExceptionHandler
         string errorMessage = _env.IsProduction()
             ? "Internal server error"
             : "Exception: " + exception.Message;
-        
+
+        Error error = Errors.Server.InternalServerError(errorMessage);
+        string result = JsonConvert.SerializeObject(
+            new { errorCode = error.ErrorCode, errorMessage = error.ErrorMessage }
+        );
+
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-        
-        return context.Response.WriteAsync(errorMessage);
+
+        return context.Response.WriteAsync(result);
     }
 }
