@@ -22,5 +22,11 @@ public static partial class Errors
             var details = new Dictionary<string, object?>() { ["email"] = email };
             return new Error("email.invalid.signature", "Email has invalid signature", details);
         }
+
+        public static Error IsTaken(string value)
+        {
+            var details = new Dictionary<string, object?>() { ["email"] = value };
+            return new Error("email.taken", "Email is already taken", details);
+        }
     }
 }

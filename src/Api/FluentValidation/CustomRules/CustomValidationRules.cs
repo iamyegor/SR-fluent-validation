@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using Api.FluentValidation.Extensions;
+using Api.Repositories;
+using DomainModel;
 using DomainModel.DomainErrors;
 using FluentValidation;
 using XResults;
+using Errors = DomainModel.DomainErrors.Errors;
 
 namespace Api.FluentValidation.CustomRules;
 
@@ -60,6 +63,23 @@ public static class CustomValidationRules
                 {
                     Error error = func(value);
                     context.AddError(error);
+                }
+            }
+        );
+    }
+
+    public static IRuleBuilderOptionsConditions<T, string> EmailMustNotBeTaken<T>(
+        this IRuleBuilder<T, string> ruleBuilder,
+        StudentRepository studentRepository
+    )
+    {
+        return ruleBuilder.Custom(
+            (value, context) =>
+            {
+                Email email = Email.Create(value);
+                if (studentRepository.IsEmailTaken(email))
+                {
+                    context.AddError(Errors.Email.IsTaken(value));
                 }
             }
         );

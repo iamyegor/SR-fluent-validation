@@ -16,6 +16,11 @@ namespace Api.Repositories
             return ExistingStudents.SingleOrDefault(x => x.Id == id);
         }
 
+        public bool IsEmailTaken(Email email)
+        {
+            return ExistingStudents.SingleOrDefault(x => x.Email == email) != null;
+        }
+
         public void Save(Student student)
         {
             // Setting up the id for new students emulates the ORM behavior
@@ -54,7 +59,14 @@ namespace Api.Repositories
             var bob = new Student(
                 Email.Create("bob@gmail.com"),
                 "Bob Bobson",
-                [Address.Create("2345 Second St", "Barlington", State.Create("VA", ["VA"]), "22202")]
+                [
+                    Address.Create(
+                        "2345 Second St",
+                        "Barlington",
+                        State.Create("VA", ["VA"]),
+                        "22202"
+                    )
+                ]
             );
             SetId(bob, 2);
             bob.Enroll(new Course(2, "History", 4), Grade.B);

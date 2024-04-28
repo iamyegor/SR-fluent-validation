@@ -9,7 +9,10 @@ namespace Api.FluentValidation.Validators;
 
 public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
 {
-    public RegisterRequestValidator(StatesRepository statesRepository)
+    public RegisterRequestValidator(
+        StatesRepository statesRepository,
+        StudentRepository studentRepository
+    )
     {
         RuleFor(x => x.Name)
             .MustNotBeEmpty(_ => Errors.State.IsRequired())
@@ -31,7 +34,10 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
             }
         );
 
-        RuleFor(x => x.Email).MustBeSuccessful(Email.Create).When(x => x.Email != null);
+        RuleFor(x => x.Email)
+            .MustBeSuccessful(Email.Create)
+            .EmailMustNotBeTaken(studentRepository)
+            .When(x => x.Email != null);
 
         RuleFor(x => x.Phone)
             .MustNotBeEmpty(_ => Errors.Phone.IsRequired())
