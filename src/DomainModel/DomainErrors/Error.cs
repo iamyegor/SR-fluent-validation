@@ -40,6 +40,11 @@ public class Error : ValueObject
     
     public static Error Deserialize(string serialized)
     {
+        if (serialized == "A non-empty request body is required.")
+        {
+            return Errors.RequestBody.IsRequired();
+        }
+
         Error? deserialized = JsonConvert.DeserializeObject<Error>(serialized);
         if (deserialized == null)
         {
